@@ -1,36 +1,61 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
+<head>
+    @include('partials.head')
+</head>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<body class="bg-body-bg">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+<!-- Start Preloader Area -->
+{{--<div class="preloader" id="preloader">--}}
+{{--    <div class="preloader">--}}
+{{--        <div class="waviy position-relative">--}}
+{{--                    <span class="d-inline-block">--}}
+{{--                    S--}}
+{{--                    </span>--}}
+{{--            <span class="d-inline-block">--}}
+{{--                    T--}}
+{{--                    </span>--}}
+{{--            <span class="d-inline-block">--}}
+{{--                    K--}}
+{{--                    </span>--}}
+{{--            <span class="d-inline-block">--}}
+{{--                    H--}}
+{{--                    </span>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--</div>--}}
+<!-- End Preloader Area -->
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+{{-- SIDEBAR --}}
+@include('partials.sidebar')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+<!-- Start Main Content Area -->
+<div class="container-fluid">
+    <div class="main-content d-flex flex-column">
+
+        {{-- Header Sticky --}}
+        @include('partials.header')
+
+        <div class="main-content-container overflow-hidden">
+            <div class="card bg-white rounded-10 border border-white p-20 mb-4 text-center">
+
+                @yield('content')
+            </div>
         </div>
-    </body>
+        <div class="flex-grow-1">
+        </div>
+        <!-- Start Footer Area -->
+       @include('partials.footer')
+        <!-- End Footer Area -->
+    </div>
+</div>
+<!-- Start Main Content Area -->
+@include('partials.top')
+<!-- Link Of JS File -->
+@include('partials.js')
+
+@stack('scripts')
+</body>
 </html>

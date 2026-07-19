@@ -15,9 +15,25 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            // 1. Catálogos base (sin dependencias)
+            DepartmentSeeder::class,
+            StatusSeeder::class,
+            PrioritySeeder::class,
+            CategorySeeder::class,
+
+            // 2. Usuarios (dependen de departments)
+            UserSeeder::class,
+
+            // 3. FAQs (independiente)
+            FaqSeeder::class,
+
+            // 4. Tickets (dependen de users + catálogos)
+            TicketSeeder::class,
+
+            // 5. Actividad sobre los tickets
+            TicketMessageSeeder::class,
+            LogSeeder::class,
         ]);
     }
 }

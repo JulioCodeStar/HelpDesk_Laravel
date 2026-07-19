@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\TicketLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,12 @@ class Log extends Model
         'action',
         'user_id',
     ];
+
+    protected static function newFactory(): TicketLogFactory
+    {
+        return TicketLogFactory::new();
+    }
+
 
     public function ticket(): BelongsTo
     {
