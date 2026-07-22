@@ -1,72 +1,97 @@
-<!-- Start Sidebar Area -->
-<div class="sidebar-area" id="sidebar-area">
-    <div class="logo position-relative d-flex align-items-center justify-content-between">
-        <a class="d-block text-decoration-none position-relative" href="#">
-            <img alt="logo-icon" src="{{ asset('assets/images/logo-icon.png') }}"/>
-            <span class="logo-text text-secondary fw-semibold">
-                HelpDesk PandaNoir
-            </span>
+@php
+    $isDashboard = request()->routeIs('dashboard');
+    $isMantenimientos = request()->routeIs('categories.*', 'departments.*');
+@endphp
+
+<aside class="app-menubar-tabs" id="appMenubar">
+    <div class="app-navbar-brand">
+        <a class="navbar-brand-logo" href="{{ route('dashboard') }}">
+            <img src="{{ asset('assets/images/logo.svg') }}" alt="NexLink Admin Dashboard Logo">
         </a>
-        <button class="sidebar-burger-menu-close bg-transparent py-3 border-0 opacity-0 z-n1 position-absolute top-50 end-0 translate-middle-y" id="sidebar-burger-menu-close">
-            <span class="border-1 d-block for-dark-burger" style="border-bottom: 1px solid #475569; height: 1px; width: 25px; transform: rotate(45deg);">
-            </span>
-            <span class="border-1 d-block for-dark-burger" style="border-bottom: 1px solid #475569; height: 1px; width: 25px; transform: rotate(-45deg);">
-            </span>
-        </button>
-        <button class="sidebar-burger-menu bg-transparent p-0 border-0" id="sidebar-burger-menu">
-            <span class="border-1 d-block for-dark-burger" style="border-bottom: 1px solid #475569; height: 1px; width: 25px;">
-            </span>
-            <span class="border-1 d-block for-dark-burger" style="border-bottom: 1px solid #475569; height: 1px; width: 25px; margin: 6px 0;">
-            </span>
-            <span class="border-1 d-block for-dark-burger" style="border-bottom: 1px solid #475569; height: 1px; width: 25px;">
-            </span>
-        </button>
     </div>
-    <aside class="layout-menu menu-vertical menu active" data-simplebar="" id="layout-menu">
-        <ul class="menu-inner">
-
-            {{-- ============ PRINCIPAL ============ --}}
-            <li class="menu-title small text-uppercase">
-                <span class="menu-title-text">Principal</span>
-            </li>
-            <li class="menu-item">
-                <a class="menu-link active" href="#">
-                    <span class="material-symbols-outlined menu-icon">dashboard</span>
-                    <span class="title">Dashboard</span>
+    <div class="app-navbar-tabs" data-simplebar>
+        <ul class="nav" id="appMenubarTabs" role="tablist" aria-orientation="vertical">
+            <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home">
+                <a class="menu-link" href="#dashboardTab" role="tab" aria-controls="dashboardTab"
+                   aria-selected="{{ $isDashboard ? 'true' : 'false' }}" data-bs-toggle="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard">
+                        <rect width="7" height="9" x="3" y="3" rx="1"/>
+                        <rect width="7" height="5" x="14" y="3" rx="1"/>
+                        <rect width="7" height="9" x="14" y="12" rx="1"/>
+                        <rect width="7" height="5" x="3" y="16" rx="1"/>
+                    </svg>
                 </a>
             </li>
 
-            {{-- ============ MANTENIMIENTOS ============ --}}
-            <li class="menu-title small text-uppercase">
-                <span class="menu-title-text">Mantenimientos</span>
-            </li>
-            <li class="menu-item">
-                <a class="menu-link" href="#">
-                    <span class="material-symbols-outlined menu-icon">apartment</span>
-                    <span class="title">Departamentos</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a class="menu-link" href="#">
-                    <span class="material-symbols-outlined menu-icon">category</span>
-                    <span class="title">Categorías</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a class="menu-link" href="#">
-                    <span class="material-symbols-outlined menu-icon">admin_panel_settings</span>
-                    <span class="title">Usuarios</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a class="menu-link" href="#">
-                    <span class="material-symbols-outlined menu-icon">flag</span>
-                    <span class="title">Faq</span>
-                </a>
-            </li>
+            <li class="nav-item-hr"></li>
 
+            {{-- MANTENIMIENTOS--}}
+            <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Mantenimientos">
+                <a class="menu-link" href="#managmentTab" role="tab" aria-controls="managmentTab"
+                   aria-selected="{{ $isMantenimientos ? 'true' : 'false' }}" data-bs-toggle="tab">
+                    <i class="icon-wrench fs-4"></i>
+                </a>
+            </li>
 
         </ul>
-    </aside>
-</div>
-<!-- End Sidebar Area -->
+    </div>
+    <div class="app-tab-content">
+        <div class="app-side-brands">
+            <a class="navbar-brand-text" href="{{ route('dashboard') }}">NexLink</a>
+        </div>
+        <div class="app-content-inner">
+            <div class="tab-content" id="appMenubarTabsContent">
+                <div class="tab-pane fade {{ $isDashboard ? 'show active' : '' }}" id="dashboardTab" role="tabpanel"
+                     tabindex="0">
+                    <nav class="app-navbar" data-simplebar>
+                        <ul class="side-menubar">
+                            <li class="menu-heading">
+                                <span class="menu-label">Home</span>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ $isDashboard ? 'active' : '' }}" href="{{ route('dashboard') }}"
+                                   role="button">
+                                    <i class="fi fi-rr-house-blank"></i>
+                                    <span class="menu-label">Dashboard</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+
+                {{-- Mantenimientos --}}
+                <div class="tab-pane fade {{ $isMantenimientos ? 'show active' : '' }}" id="managmentTab"
+                     role="tabpanel" tabindex="0">
+                    <nav class="app-navbar" data-simplebar>
+                        <ul class="side-menubar">
+                            <li class="menu-heading">
+                                <span class="menu-label">Mantenimientos</span>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
+                                   href="{{ route('categories.index') }}" role="button">
+                                    <i class="icon-chart-bar-stacked"></i>
+                                    <span class="menu-label">Categorías</span>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('departments.*') ? 'active' : '' }}"
+                                   href="{{ route('departments.index') }}" role="button">
+                                    <i class="icon-newspaper"></i>
+                                    <span class="menu-label">Departamentos</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</aside>
