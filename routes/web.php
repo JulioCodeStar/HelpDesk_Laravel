@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,9 @@ Route::middleware('auth')->group(function () {
 
     // Departments
     Route::resource('departments', DepartmentController::class)->except(['show']);
+
+    // FAQS
+    Route::resource('faqs', FaqController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';

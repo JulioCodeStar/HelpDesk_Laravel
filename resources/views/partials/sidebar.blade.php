@@ -1,6 +1,6 @@
 @php
     $isDashboard = request()->routeIs('dashboard');
-    $isMantenimientos = request()->routeIs('categories.*', 'departments.*');
+    $isMantenimientos = request()->routeIs('categories.*', 'departments.*', 'faqs.*');
 @endphp
 
 <aside class="app-menubar-tabs" id="appMenubar">
@@ -82,6 +82,13 @@
                                    href="{{ route('departments.index') }}" role="button">
                                     <i class="icon-newspaper"></i>
                                     <span class="menu-label">Departamentos</span>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('faqs.*') ? 'active' : '' }}"
+                                   href="{{ route('faqs.index') }}" role="button">
+                                    <i class="icon-mails"></i>
+                                    <span class="menu-label">FAQS</span>
                                 </a>
                             </li>
 
