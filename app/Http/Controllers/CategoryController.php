@@ -10,14 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        try {
-            $categories = Category::latest()
-                ->get()->sortBy('id');
-            return view('categories.index', compact('categories'));
-        } catch (\Exception $e) {
-            Log::error('Error en CategoryController@index: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al cargar las categorias');
-        }
+        return view('categories.index');
     }
 
     public function create()

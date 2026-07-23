@@ -11,14 +11,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        try {
-            $departments = Department::withCount('users')->latest()->get();
-            return view('departments.index', compact('departments'));
-        } catch (\Exception $e) {
-            Log::error('Error en DepartmentController@index: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al cargar los departamentos');
-        }
-
+        return view('departments.index');
     }
 
     public function create()

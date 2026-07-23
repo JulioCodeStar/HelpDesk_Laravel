@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AttachmentTicket extends Model
 {
     use HasFactory;
-    protected $table = 'attachments_tickets';
+    protected $table = 'attachment_tickets';
 
     protected $fillable = [
         'ticket_id',

@@ -1,6 +1,7 @@
 @php
     $isDashboard = request()->routeIs('dashboard');
-    $isMantenimientos = request()->routeIs('categories.*', 'departments.*', 'faqs.*');
+    $isMantenimientos = request()->routeIs('categories.*', 'departments.*', 'faqs.*', 'users.*');
+    $isTickets = request()->routeIs('tickets.*');
 @endphp
 
 <aside class="app-menubar-tabs" id="appMenubar">
@@ -35,6 +36,38 @@
                 </a>
             </li>
 
+            <li class="nav-item-hr"></li>
+
+            {{-- TICKETS --}}
+            <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tickets">
+                <a class="menu-link" href="#ticketsTab" role="tab" aria-controls="ticketsTab"
+                   aria-selected="{{ $isTickets ? 'true' : 'false' }}" data-bs-toggle="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-tag-icon lucide-tag">
+                        <path
+                            d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+                        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+                    </svg>
+                </a>
+            </li>
+
+            <li class="nav-item-hr"></li>
+
+            {{-- GESTIÓN --}}
+            <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Gestión">
+                <a class="menu-link" href="#gestionTab" role="tab" aria-controls="gestionTab"
+                   aria-selected="{{ $isTickets ? 'true' : 'false' }}" data-bs-toggle="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-square-chart-gantt-icon lucide-square-chart-gantt">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                        <path d="M9 8h7"/>
+                        <path d="M8 12h6"/>
+                        <path d="M11 16h5"/>
+                    </svg>
+                </a>
+            </li>
         </ul>
     </div>
     <div class="app-tab-content">
@@ -91,11 +124,60 @@
                                     <span class="menu-label">FAQS</span>
                                 </a>
                             </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
+                                   href="{{ route('users.index') }}" role="button">
+                                    <i class="icon-user-round-cog"></i>
+                                    <span class="menu-label">Usuarios</span>
+                                </a>
+                            </li>
 
                         </ul>
                     </nav>
                 </div>
 
+                {{-- Tickets --}}
+                <div class="tab-pane fade {{ $isTickets ? 'show active' : '' }}" id="ticketsTab"
+                     role="tabpanel" tabindex="0">
+                    <nav class="app-navbar" data-simplebar>
+                        <ul class="side-menubar">
+                            <li class="menu-heading">
+                                <span class="menu-label">Tickets</span>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('tickets.index') ? 'active' : '' }}"
+                                   href="{{ route('tickets.index') }}" role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="lucide lucide-tag-icon lucide-tag">
+                                        <path
+                                            d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+                                        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+                                    </svg>
+                                    <span class="menu-label">Mis Tickets</span>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('tickets.create') ? 'active' : '' }}"
+                                   href="{{ route('tickets.create') }}" role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" class="lucide lucide-tag-plus-icon lucide-tag-plus">
+                                        <path d="M16 13h6"/>
+                                        <path
+                                            d="m16.5 6.5-3.914-3.914A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l1.79-1.79"/>
+                                        <path d="M19 10v6"/>
+                                        <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+                                    </svg>
+                                    <span class="menu-label">Nuevo Ticket</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
             </div>
 
 

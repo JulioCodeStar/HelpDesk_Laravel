@@ -14,13 +14,7 @@ class FaqController extends Controller
      */
     public function index()
     {
-        try {
-            $faqs = Faq::latest()->get();
-            return view('faqs.index', compact('faqs'));
-        } catch (\Exception $e) {
-            Log::error('Error en FaqController@index: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al cargar las preguntas frecuentes');
-        }
+        return view('faqs.index');
     }
 
     /**

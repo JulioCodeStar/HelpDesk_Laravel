@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Usuarios')
+@section('title', 'Tickets')
 
 @push('styles')
 <style>
+    /* Avatar de iniciales */
     .lw-avatar {
         width: 28px; height: 28px;
         border-radius: 50%;
@@ -18,6 +19,8 @@
         letter-spacing: .02em;
         user-select: none;
     }
+    /* Fijar altura mínima de filas de tabla para evitar saltos al cargar */
+    #tickets-table-wrap tbody tr { height: 52px; }
 </style>
 @endpush
 
@@ -25,20 +28,19 @@
     <div class="app-page-head d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <x-breadcrumb :items="[
-                ['label' => 'Inicio',        'url' => route('dashboard'), 'icon' => 'fi fi-rr-home'],
-                ['label' => 'Mantenimiento', 'url' => '#',                'icon' => 'fi fi-rr-settings'],
-                ['label' => 'Usuarios'],
+                ['label' => 'Inicio',  'url' => route('dashboard'), 'icon' => 'fi fi-rr-home'],
+                ['label' => 'Tickets'],
             ]"/>
         </div>
-        <a href="{{ route('users.create') }}" class="btn btn-primary waves-effect waves-light">
+        <a href="{{ route('tickets.create') }}" class="btn btn-primary waves-effect waves-light">
             <i class="fi fi-rr-plus me-2"></i> Nuevo
         </a>
     </div>
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card overflow-hidden p-0">
-                <livewire:users-table title="Listado de usuarios" />
+            <div class="card overflow-hidden p-0" id="tickets-table-wrap">
+                <livewire:tickets-table title="Listado de tickets" />
             </div>
         </div>
     </div>
