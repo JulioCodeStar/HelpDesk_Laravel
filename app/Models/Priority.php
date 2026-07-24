@@ -12,7 +12,7 @@ class Priority extends Model
 
     protected $table = 'priority'; // evita que busque "priorities"
 
-    protected $fillable = ['name', 'response_time_minutes'];
+    protected $fillable = ['name', 'response_time_minutes', 'color'];
 
     public function tickets(): HasMany
     {

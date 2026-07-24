@@ -1,7 +1,8 @@
 @php
     $isDashboard = request()->routeIs('dashboard');
     $isMantenimientos = request()->routeIs('categories.*', 'departments.*', 'faqs.*', 'users.*');
-    $isTickets = request()->routeIs('tickets.*');
+    $isTickets = request()->routeIs('tickets.index', 'tickets.create');
+    $isGestion = request()->routeIs('tickets.gestion');
 @endphp
 
 <aside class="app-menubar-tabs" id="appMenubar">
@@ -57,7 +58,7 @@
             {{-- GESTIÓN --}}
             <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Gestión">
                 <a class="menu-link" href="#gestionTab" role="tab" aria-controls="gestionTab"
-                   aria-selected="{{ $isTickets ? 'true' : 'false' }}" data-bs-toggle="tab">
+                   aria-selected="{{ $isGestion ? 'true' : 'false' }}" data-bs-toggle="tab">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="lucide lucide-square-chart-gantt-icon lucide-square-chart-gantt">
@@ -174,6 +175,34 @@
                                     <span class="menu-label">Nuevo Ticket</span>
                                 </a>
                             </li>
+
+                        </ul>
+                    </nav>
+                </div>
+
+                {{-- Gestión --}}
+                <div class="tab-pane fade {{ $isGestion ? 'show active' : '' }}" id="gestionTab"
+                     role="tabpanel" tabindex="0">
+                    <nav class="app-navbar" data-simplebar>
+                        <ul class="side-menubar">
+                            <li class="menu-heading">
+                                <span class="menu-label">Gestión</span>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link {{ request()->routeIs('tickets.gestion') ? 'active' : '' }}"
+                                   href="{{ route('tickets.gestion') }}" role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                         class="lucide lucide-square-chart-gantt-icon lucide-square-chart-gantt">
+                                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                                        <path d="M9 8h7"/>
+                                        <path d="M8 12h6"/>
+                                        <path d="M11 16h5"/>
+                                    </svg>
+                                    <span class="menu-label">Gestionar Tickets</span>
+                                </a>
+                            </li>
+
 
                         </ul>
                     </nav>

@@ -34,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
 
     // Tickets
+    Route::get('tickets/gestion', [TicketController::class, 'gestion'])->name('tickets.gestion');
+    Route::get('tickets/{ticket}/detalle', [TicketController::class, 'detalle'])->name('tickets.detalle');
+    Route::put('tickets/{ticket}/gestionar', [TicketController::class, 'gestionar'])->name('tickets.gestionar');
     Route::get('/tickets/index',       [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/datatables',  [TicketController::class, 'datatables'])->name('tickets.datatables');
     Route::get('/tickets/create',      [TicketController::class, 'create'])->name('tickets.create');

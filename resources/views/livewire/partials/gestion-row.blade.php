@@ -1,25 +1,20 @@
 @php
-    // Iniciales del solicitante
     $initials = '';
     foreach (explode(' ', $row->creator_name ?? '') as $part) {
         if ($part !== '') $initials .= strtoupper($part[0]);
         if (strlen($initials) >= 2) break;
     }
 
-    // Badge de prioridad
     $prioClass = match ($row->priority_name) {
         'Alta'  => 'bg-danger-subtle text-danger',
         'Media' => 'bg-warning-subtle text-warning',
         default => 'bg-secondary-subtle text-secondary',
     };
 
-    $prioClass = $row->
-
-    // Color del estado
     $statusColor = $row->status_color ?? '#6c757d';
 @endphp
 
-<tr>
+<tr class="{{ is_null($row->assigned_to) ? 'table-warning-subtle' : '' }}">
     <td class="text-muted fw-medium">#{{ $row->id }}</td>
 
     <td class="fw-medium">{{ \Illuminate\Support\Str::limit($row->subject, 60) }}</td>
@@ -59,9 +54,12 @@
 
     <td>
         <div class="d-flex justify-content-end gap-2">
-            <a href="#" class="btn btn-sm btn-subtle-primary waves-effect">
-                <i class="fi fi-rr-eye"></i>
-            </a>
+            <button type="button"
+                    class="btn btn-sm btn-subtle-primary waves-effect btn-gestionar"
+                    data-url="{{ route('tickets.detalle', $row->id) }}"
+                    data-action="{{ route('tickets.gestionar', $row->id) }}">
+                <i class="fi fi-rr-settings-sliders me-1"></i>
+            </button>
         </div>
     </td>
 </tr>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\Category;
 use App\Models\AttachmentTicket;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -230,6 +232,95 @@ class TicketController extends Controller
                 ->back()
                 ->withInput()
                 ->with('error', 'Ocurrió un error al registrar el ticket. Inténtalo nuevamente.');
+        }
+    }
+
+    /**
+     * Vista de gestión de tickets.
+     * Los tickets sin asignar aparecen primero para priorizar su atención.
+     */
+    public function gestion()
+    {
+        $agents = User::whereIn('role', ['agente', 'admin'])
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $priorities = Priority::orderBy('id')->get(['id', 'name']);
+
+        return view('tickets.gestion', compact('agents', 'priorities'));
+    }
+
+    /**
+     * Devuelve el detalle de un ticket en JSON para poblar el modal de gestión.
+     * Incluye relaciones y archivos adjuntos con su URL pública.
+     */
+    public function detalle(Ticket $ticket)
+    {
+        try {
+            $ticket->load(['creator', 'agent', 'status', 'priority', 'category', 'attachments']);
+
+            return response()->json([
+                'id'          => $ticket->id,
+                'subject'     => $ticket->subject,
+                'description' => $ticket->description,
+                'creator'     => $ticket->creator->name ?? '—',
+                'email'       => $ticket->creator->email ?? '—',
+                'category'    => $ticket->category->name ?? '—',
+                'status'      => $ticket->status->name ?? '—',
+                'status_color'=> $ticket->status->color ?? '#6c757d',
+                'created_at'  => $ticket->created_at->format('d/m/Y H:i'),
+                'closed_at'   => $ticket->closed_at?->format('d/m/Y H:i'),
+                // Valores actuales para preseleccionar los selects
+                'assigned_to' => $ticket->assigned_to,
+                'priority_id' => $ticket->priority_id,
+                // Adjuntos con su URL pública para descargar
+                'attachments' => $ticket->attachments->map(fn ($a) => [
+                    'id'   => $a->id,
+                    'url'  => asset('storage/' . $a->file_path),
+                    'name' => basename($a->file_path),
+                    'type' => $a->file_type,
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en TicketController@detalle: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al cargar el ticket.'], 500);
+        }
+    }
+
+    /**
+     * Actualiza el agente asignado y la prioridad de un ticket
+     * desde el modal de gestión.
+     */
+    public function gestionar(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'assigned_to' => 'nullable|exists:users,id',
+            'priority_id' => 'required|exists:priority,id',
+        ], [
+            'assigned_to.exists' => 'El agente seleccionado no es válido.',
+            'priority_id.required' => 'Selecciona una prioridad.',
+            'priority_id.exists' => 'La prioridad seleccionada no es válida.',
+        ]);
+
+        try {
+            $ticket->fill($validated);
+
+            if (!$ticket->isDirty()) {
+                return redirect()
+                    ->route('tickets.gestion')
+                    ->with('info', 'No se realizaron cambios en el ticket.');
+            }
+
+            $ticket->save();
+
+            return redirect()
+                ->route('tickets.gestion')
+                ->with('success', "El ticket #{$ticket->id} se actualizó correctamente.");
+        } catch (QueryException $e) {
+            Log::error('Error en TicketController@gestionar: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Ocurrió un error al actualizar el ticket. Inténtalo nuevamente.');
         }
     }
 }

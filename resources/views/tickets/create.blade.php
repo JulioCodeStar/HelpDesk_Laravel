@@ -749,7 +749,7 @@
         });
 
         dz.on('successmultiple', function () {
-            window.location.href = "{{ route('tickets.create') }}";
+            window.location.href = "{{ route('tickets.index') }}";
         });
 
         dz.on('errormultiple', function (files, response) {

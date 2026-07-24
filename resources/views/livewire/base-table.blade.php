@@ -42,6 +42,11 @@
             <span class="badge bg-subtle-primary text-primary ms-1">
                 {{ number_format($rows->total()) }}
             </span>
+            @if (!empty($unassigned_count))
+                <span class="badge bg-warning-subtle text-warning ms-1">
+                    {{ $unassigned_count }} sin asignar
+                </span>
+            @endif
         </h6>
 
         <div class="d-flex align-items-center gap-2">
