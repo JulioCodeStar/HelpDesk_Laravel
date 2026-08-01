@@ -10,7 +10,7 @@ class AttachmentMessage extends Model
 {
     use HasFactory;
 
-    protected $table = 'attachments_messages';
+    protected $table = 'attachment_messages';
 
     protected $fillable = [
         'ticket_message_id',

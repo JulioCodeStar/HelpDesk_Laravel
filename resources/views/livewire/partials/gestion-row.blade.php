@@ -54,6 +54,11 @@
 
     <td>
         <div class="d-flex justify-content-end gap-2">
+            <a href="{{ route('tickets.show', $row->id) }}"
+               class="btn btn-sm btn-subtle-primary waves-effect"
+               title="Ver detalle">
+                <i class="fi fi-rr-eye"></i>
+            </a>
             <button type="button"
                     class="btn btn-sm btn-subtle-primary waves-effect btn-gestionar"
                     data-url="{{ route('tickets.detalle', $row->id) }}"

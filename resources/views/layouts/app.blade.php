@@ -3,6 +3,12 @@
 <head>
     @include('partials.head')
     @stack('styles')
+    <script>
+        (function () {
+            var s = localStorage.getItem('sidebar-state');
+            if (s) document.documentElement.setAttribute('data-app-sidebar', s);
+        })();
+    </script>
 </head>
 
 <body>

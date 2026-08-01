@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttachmentMessage;
 use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\Category;
 use App\Models\AttachmentTicket;
+use App\Models\TicketMessage;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,10 +30,10 @@ class TicketController extends Controller
      */
     public function datatables(Request $request): JsonResponse
     {
-        $draw   = (int) $request->input('draw', 1);
-        $start  = max(0, (int) $request->input('start', 0));
-        $length = min(100, max(1, (int) $request->input('length', 25)));
-        $search = trim((string) $request->input('search.value', ''));
+        $draw = (int)$request->input('draw', 1);
+        $start = max(0, (int)$request->input('start', 0));
+        $length = min(100, max(1, (int)$request->input('length', 25)));
+        $search = trim((string)$request->input('search.value', ''));
 
         // Columnas mapeadas por índice DataTables → columna SQL ordenable
         $sortMap = [
@@ -39,9 +41,9 @@ class TicketController extends Controller
             1 => 'tickets.subject',
             7 => 'tickets.created_at',
         ];
-        $orderIdx = (int) $request->input('order.0.column', 7);
+        $orderIdx = (int)$request->input('order.0.column', 7);
         $orderDir = $request->input('order.0.dir', 'desc') === 'asc' ? 'asc' : 'desc';
-        $sortCol  = $sortMap[$orderIdx] ?? 'tickets.created_at';
+        $sortCol = $sortMap[$orderIdx] ?? 'tickets.created_at';
 
         // Query base con JOINs (evita N+1 y subqueries)
         $base = Ticket::query()
@@ -56,10 +58,10 @@ class TicketController extends Controller
                 's.color as status_color',
                 'p.name  as priority_name',
             ])
-            ->leftJoin('users as u', 'tickets.user_id',     '=', 'u.id')
+            ->leftJoin('users as u', 'tickets.user_id', '=', 'u.id')
             ->leftJoin('users as a', 'tickets.assigned_to', '=', 'a.id')
             ->leftJoin('categories as c', 'tickets.category_id', '=', 'c.id')
-            ->leftJoin('statuses as s',   'tickets.status_id',   '=', 's.id')
+            ->leftJoin('statuses as s', 'tickets.status_id', '=', 's.id')
             ->leftJoin('priorities as p', 'tickets.priority_id', '=', 'p.id');
 
         if (auth()->user()->role === 'cliente') {
@@ -70,21 +72,21 @@ class TicketController extends Controller
 
         if ($search !== '') {
             $base->where(function ($q) use ($search) {
-                $q->where('tickets.id',      'like', "%{$search}%")
-                  ->orWhere('tickets.subject', 'like', "%{$search}%")
-                  ->orWhere('u.name',          'like', "%{$search}%")
-                  ->orWhere('c.name',          'like', "%{$search}%")
-                  ->orWhere('s.name',          'like', "%{$search}%")
-                  ->orWhere('p.name',          'like', "%{$search}%");
+                $q->where('tickets.id', 'like', "%{$search}%")
+                    ->orWhere('tickets.subject', 'like', "%{$search}%")
+                    ->orWhere('u.name', 'like', "%{$search}%")
+                    ->orWhere('c.name', 'like', "%{$search}%")
+                    ->orWhere('s.name', 'like', "%{$search}%")
+                    ->orWhere('p.name', 'like', "%{$search}%");
             });
         }
 
         $filtered = (clone $base)->count();
 
         $rows = $base->orderBy($sortCol, $orderDir)
-                     ->skip($start)
-                     ->take($length)
-                     ->get();
+            ->skip($start)
+            ->take($length)
+            ->get();
 
         $data = $rows->map(function ($row) {
             // Iniciales CSS en lugar de avatar externo
@@ -97,7 +99,7 @@ class TicketController extends Controller
 
             // Badge de prioridad
             $prioClass = match ($row->priority_name) {
-                'Alta'  => 'bg-danger-subtle text-danger',
+                'Alta' => 'bg-danger-subtle text-danger',
                 'Media' => 'bg-warning-subtle text-warning',
                 default => 'bg-secondary-subtle text-secondary',
             };
@@ -106,31 +108,31 @@ class TicketController extends Controller
             $statusColor = $row->status_color ?? '#6c757d';
 
             return [
-                'id'         => '#' . $row->id,
-                'subject'    => e(Str::limit($row->subject, 60)),
-                'creator'    => '<div class="d-flex align-items-center gap-2">'
-                               . '<span class="dt-avatar">' . e($initials) . '</span>'
-                               . '<span>' . e($creatorName) . '</span>'
-                               . '</div>',
-                'assigned'   => $row->agent_name
-                               ? e($row->agent_name)
-                               : '<span class="badge bg-warning-subtle text-warning">Sin asignar</span>',
-                'category'   => e($row->category_name ?? '—'),
-                'priority'   => '<span class="badge ' . $prioClass . '">' . e($row->priority_name ?? '—') . '</span>',
-                'status'     => '<span class="badge" style="background:' . e($statusColor) . '1a;color:' . e($statusColor) . '">'
-                               . e($row->status_name ?? '—') . '</span>',
+                'id' => '#' . $row->id,
+                'subject' => e(Str::limit($row->subject, 60)),
+                'creator' => '<div class="d-flex align-items-center gap-2">'
+                    . '<span class="dt-avatar">' . e($initials) . '</span>'
+                    . '<span>' . e($creatorName) . '</span>'
+                    . '</div>',
+                'assigned' => $row->agent_name
+                    ? e($row->agent_name)
+                    : '<span class="badge bg-warning-subtle text-warning">Sin asignar</span>',
+                'category' => e($row->category_name ?? '—'),
+                'priority' => '<span class="badge ' . $prioClass . '">' . e($row->priority_name ?? '—') . '</span>',
+                'status' => '<span class="badge" style="background:' . e($statusColor) . '1a;color:' . e($statusColor) . '">'
+                    . e($row->status_name ?? '—') . '</span>',
                 'created_at' => $row->created_at?->format('d/m/Y') ?? '—',
-                'actions'    => '<div class="d-flex justify-content-end gap-2">'
-                               . '<a href="#" class="btn btn-sm btn-subtle-primary waves-effect"><i class="fi fi-rr-eye"></i></a>'
-                               . '</div>',
+                'actions' => '<div class="d-flex justify-content-end gap-2">'
+                    . '<a href="' . route('tickets.show', $row->id) . '" class="btn btn-sm btn-subtle-primary waves-effect" title="Ver detalle"><i class="fi fi-rr-eye"></i></a>'
+                    . '</div>',
             ];
         });
 
         return response()->json([
-            'draw'            => $draw,
-            'recordsTotal'    => $total,
+            'draw' => $draw,
+            'recordsTotal' => $total,
             'recordsFiltered' => $filtered,
-            'data'            => $data,
+            'data' => $data,
         ]);
     }
 
@@ -260,23 +262,23 @@ class TicketController extends Controller
             $ticket->load(['creator', 'agent', 'status', 'priority', 'category', 'attachments']);
 
             return response()->json([
-                'id'          => $ticket->id,
-                'subject'     => $ticket->subject,
+                'id' => $ticket->id,
+                'subject' => $ticket->subject,
                 'description' => $ticket->description,
-                'creator'     => $ticket->creator->name ?? '—',
-                'email'       => $ticket->creator->email ?? '—',
-                'category'    => $ticket->category->name ?? '—',
-                'status'      => $ticket->status->name ?? '—',
-                'status_color'=> $ticket->status->color ?? '#6c757d',
-                'created_at'  => $ticket->created_at->format('d/m/Y H:i'),
-                'closed_at'   => $ticket->closed_at?->format('d/m/Y H:i'),
+                'creator' => $ticket->creator->name ?? '—',
+                'email' => $ticket->creator->email ?? '—',
+                'category' => $ticket->category->name ?? '—',
+                'status' => $ticket->status->name ?? '—',
+                'status_color' => $ticket->status->color ?? '#6c757d',
+                'created_at' => $ticket->created_at->format('d/m/Y H:i'),
+                'closed_at' => $ticket->closed_at?->format('d/m/Y H:i'),
                 // Valores actuales para preseleccionar los selects
                 'assigned_to' => $ticket->assigned_to,
                 'priority_id' => $ticket->priority_id,
                 // Adjuntos con su URL pública para descargar
-                'attachments' => $ticket->attachments->map(fn ($a) => [
-                    'id'   => $a->id,
-                    'url'  => asset('storage/' . $a->file_path),
+                'attachments' => $ticket->attachments->map(fn($a) => [
+                    'id' => $a->id,
+                    'url' => route('attachments.download', ['type' => 'ticket', 'id' => $a->id]),
                     'name' => basename($a->file_path),
                     'type' => $a->file_type,
                 ]),
@@ -316,11 +318,137 @@ class TicketController extends Controller
             return redirect()
                 ->route('tickets.gestion')
                 ->with('success', "El ticket #{$ticket->id} se actualizó correctamente.");
-        } catch (QueryException $e) {
+        } catch (\Exception $e) {
             Log::error('Error en TicketController@gestionar: ' . $e->getMessage());
             return redirect()
                 ->back()
                 ->with('error', 'Ocurrió un error al actualizar el ticket. Inténtalo nuevamente.');
+        }
+    }
+
+    /**
+     * Muestra el detalle completo de un ticket:
+     * información general, adjuntos, y el hilo de mensajes con sus adjuntos.
+     */
+    public function show(Ticket $ticket)
+    {
+        try {
+            $ticket->load([
+                'creator',
+                'agent',
+                'status',
+                'priority',
+                'category',
+                'attachments',
+                // Mensajes en orden cronológico, con su autor y adjuntos
+                'messages' => fn($q) => $q->oldest(),
+                'messages.user',
+                'messages.attachments',
+            ]);
+
+            return view('tickets.detalle', compact('ticket'));
+        } catch (\Exception $e) {
+            Log::error('Error en TicketController@show: ' . $e->getMessage());
+            return redirect()->route('tickets.index')->with('error', 'Error al cargar el ticket.');
+        }
+    }
+
+    /**
+     * Registra una respuesta (mensaje) en el ticket junto con sus adjuntos.
+     * - user_id se toma del usuario autenticado.
+     * - Los archivos se guardan en attachments/messages/{ticket_message_id}/.
+     */
+    public function responder(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'message' => 'required|string|max:5000',
+            'attachments' => 'nullable|array|max:5',
+            'attachments.*' => 'file|max:5120|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx,txt,zip',
+        ], [
+            'message.required' => 'El mensaje es obligatorio.',
+            'message.max' => 'El mensaje no puede superar los 5000 caracteres.',
+            'attachments.max' => 'Puedes adjuntar como máximo 5 archivos.',
+            'attachments.*.max' => 'Cada archivo no puede superar los 5 MB.',
+            'attachments.*.mimes' => 'Formato de archivo no permitido.',
+        ]);
+
+        // Transacción: si falla un adjunto, no queda un mensaje a medias
+        DB::beginTransaction();
+
+        try {
+            // 1. Crear el mensaje
+            $message = TicketMessage::create([
+                'ticket_id' => $ticket->id,
+                'user_id' => auth()->id(),
+                'message' => $validated['message'],
+            ]);
+
+            // 2. Guardar los adjuntos en su carpeta propia, si los hay
+            if ($request->hasFile('attachments')) {
+                $folder = "attachments/messages/{$message->id}";
+
+                foreach ($request->file('attachments') as $file) {
+                    $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $filename = Str::slug($original) . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+                    $path = $file->storeAs($folder, $filename, 'public');
+
+                    AttachmentMessage::create([
+                        'ticket_message_id' => $message->id,
+                        'file_path' => $path,
+                        'file_type' => $file->getClientOriginalExtension(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // Si vino por AJAX (Dropzone), respondemos JSON
+            if ($request->ajax()) {
+                return response()->json(['ok' => true, 'ticket_id' => $ticket->id]);
+            }
+
+            return redirect()
+                ->route('tickets.show', $ticket)
+                ->with('success', 'Tu respuesta se envió correctamente.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en TicketController@responder: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Error al enviar la respuesta.'], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al enviar la respuesta. Inténtalo nuevamente.');
+        }
+    }
+
+    /**
+     * Sirve un archivo adjunto (de ticket o de mensaje) desde storage.
+     * $type define de qué tabla proviene: 'ticket' o 'message'.
+     */
+    public function descargarAdjunto($type, $id)
+    {
+        try {
+            // Se elige el modelo según el tipo
+            $attachment = $type === 'ticket'
+                ? AttachmentTicket::findOrFail($id)
+                : AttachmentMessage::findOrFail($id);
+
+            $path = storage_path('app/public/' . $attachment->file_path);
+
+            if (!file_exists($path)) {
+                abort(404, 'Archivo no encontrado.');
+            }
+
+            return response()->file($path);
+        } catch (\Exception $e) {
+            Log::error('Error en TicketController@descargarAdjunto: ' . $e->getMessage());
+            abort(404, 'Archivo no encontrado.');
         }
     }
 }

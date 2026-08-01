@@ -13,8 +13,6 @@
         default => 'bg-secondary-subtle text-secondary',
     };
 
-    $prioClass = $row->
-
     // Color del estado
     $statusColor = $row->status_color ?? '#6c757d';
 @endphp
@@ -59,7 +57,9 @@
 
     <td>
         <div class="d-flex justify-content-end gap-2">
-            <a href="#" class="btn btn-sm btn-subtle-primary waves-effect">
+            <a href="{{ route('tickets.show', $row->id) }}"
+               class="btn btn-sm btn-subtle-primary waves-effect"
+               title="Ver detalle">
                 <i class="fi fi-rr-eye"></i>
             </a>
         </div>

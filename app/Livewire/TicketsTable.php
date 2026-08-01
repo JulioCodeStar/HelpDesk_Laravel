@@ -24,10 +24,10 @@ class TicketsTable extends BaseTable
                 's.color as status_color',
                 'p.name  as priority_name',
             ])
-            ->leftJoin('users as u',      'tickets.user_id',     '=', 'u.id')
-            ->leftJoin('users as a',      'tickets.assigned_to', '=', 'a.id')
+            ->leftJoin('users as u', 'tickets.user_id', '=', 'u.id')
+            ->leftJoin('users as a', 'tickets.assigned_to', '=', 'a.id')
             ->leftJoin('categories as c', 'tickets.category_id', '=', 'c.id')
-            ->leftJoin('status as s',   'tickets.status_id',   '=', 's.id')
+            ->leftJoin('status as s', 'tickets.status_id', '=', 's.id')
             ->leftJoin('priority as p', 'tickets.priority_id', '=', 'p.id');
 
         // Los clientes solo ven sus propios tickets
@@ -42,12 +42,12 @@ class TicketsTable extends BaseTable
 
     protected function applySearch($query, string $search): void
     {
-        $query->where('tickets.id',       'like', "%{$search}%")
-              ->orWhere('tickets.subject', 'like', "%{$search}%")
-              ->orWhere('u.name',          'like', "%{$search}%")
-              ->orWhere('c.name',          'like', "%{$search}%")
-              ->orWhere('s.name',          'like', "%{$search}%")
-              ->orWhere('p.name',          'like', "%{$search}%");
+        $query->where('tickets.id', 'like', "%{$search}%")
+            ->orWhere('tickets.subject', 'like', "%{$search}%")
+            ->orWhere('u.name', 'like', "%{$search}%")
+            ->orWhere('c.name', 'like', "%{$search}%")
+            ->orWhere('s.name', 'like', "%{$search}%")
+            ->orWhere('p.name', 'like', "%{$search}%");
     }
 
     // ── Configuración ──────────────────────────────────────────────
@@ -60,15 +60,15 @@ class TicketsTable extends BaseTable
     public function columns(): array
     {
         return [
-            ['label' => '#',          'col' => 'tickets.id',         'sortable' => true],
-            ['label' => 'Asunto',     'col' => 'tickets.subject',    'sortable' => true,  'style' => 'min-width:280px'],
-            ['label' => 'Solicitante','col' => null,                 'sortable' => false, 'style' => 'min-width:180px'],
-            ['label' => 'Asignado a', 'col' => null,                 'sortable' => false, 'style' => 'min-width:160px'],
-            ['label' => 'Categoría',  'col' => null,                 'sortable' => false],
-            ['label' => 'Prioridad',  'col' => null,                 'sortable' => false],
-            ['label' => 'Estado',     'col' => null,                 'sortable' => false],
-            ['label' => 'Creado',     'col' => 'tickets.created_at', 'sortable' => true],
-            ['label' => 'Acciones',   'col' => null,                 'sortable' => false, 'class' => 'text-end'],
+            ['label' => '#', 'col' => 'tickets.id', 'sortable' => true],
+            ['label' => 'Asunto', 'col' => 'tickets.subject', 'sortable' => true, 'style' => 'min-width:280px'],
+            ['label' => 'Solicitante', 'col' => null, 'sortable' => false, 'style' => 'min-width:180px'],
+            ['label' => 'Asignado a', 'col' => null, 'sortable' => false, 'style' => 'min-width:160px'],
+            ['label' => 'Categoría', 'col' => null, 'sortable' => false],
+            ['label' => 'Prioridad', 'col' => null, 'sortable' => false],
+            ['label' => 'Estado', 'col' => null, 'sortable' => false],
+            ['label' => 'Creado', 'col' => 'tickets.created_at', 'sortable' => true],
+            ['label' => 'Acciones', 'col' => null, 'sortable' => false, 'class' => 'text-end'],
         ];
     }
 

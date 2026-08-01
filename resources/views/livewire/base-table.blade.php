@@ -140,6 +140,14 @@
                 </small>
 
                 <ul class="pagination pagination-sm mb-0">
+                    {{-- Primera página --}}
+                    <li class="page-item {{ $rows->onFirstPage() ? 'disabled' : '' }}">
+                        <button class="page-link" wire:click="gotoPage(1)" wire:loading.attr="disabled"
+                                title="Primera página">
+                            <i class="fi fi-rr-angle-double-left"></i>
+                        </button>
+                    </li>
+
                     {{-- Anterior --}}
                     <li class="page-item {{ $rows->onFirstPage() ? 'disabled' : '' }}">
                         <button class="page-link" wire:click="previousPage" wire:loading.attr="disabled">
@@ -160,6 +168,14 @@
                     <li class="page-item {{ ! $rows->hasMorePages() ? 'disabled' : '' }}">
                         <button class="page-link" wire:click="nextPage" wire:loading.attr="disabled">
                             <i class="fi fi-rr-angle-right"></i>
+                        </button>
+                    </li>
+
+                    {{-- Última página --}}
+                    <li class="page-item {{ ! $rows->hasMorePages() ? 'disabled' : '' }}">
+                        <button class="page-link" wire:click="gotoPage({{ $rows->lastPage() }})" wire:loading.attr="disabled"
+                                title="Última página">
+                            <i class="fi fi-rr-angle-double-right"></i>
                         </button>
                     </li>
                 </ul>

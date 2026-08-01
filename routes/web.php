@@ -37,10 +37,17 @@ Route::middleware('auth')->group(function () {
     Route::get('tickets/gestion', [TicketController::class, 'gestion'])->name('tickets.gestion');
     Route::get('tickets/{ticket}/detalle', [TicketController::class, 'detalle'])->name('tickets.detalle');
     Route::put('tickets/{ticket}/gestionar', [TicketController::class, 'gestionar'])->name('tickets.gestionar');
-    Route::get('/tickets/index',       [TicketController::class, 'index'])->name('tickets.index');
-    Route::get('/tickets/datatables',  [TicketController::class, 'datatables'])->name('tickets.datatables');
-    Route::get('/tickets/create',      [TicketController::class, 'create'])->name('tickets.create');
-    Route::post('/tickets',            [TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/tickets/index', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/datatables', [TicketController::class, 'datatables'])->name('tickets.datatables');
+    Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+
+    Route::get('tickets/{ticket}/show', [TicketController::class, 'show'])->name('tickets.show');
+    Route::post('tickets/{ticket}/responder', [TicketController::class, 'responder'])->name('tickets.responder');
+
+    Route::get('attachments/{type}/{id}', [TicketController::class, 'descargarAdjunto'])
+        ->name('attachments.download')
+        ->where('type', 'ticket|message');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

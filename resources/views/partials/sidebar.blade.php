@@ -1,7 +1,7 @@
 @php
     $isDashboard = request()->routeIs('dashboard');
     $isMantenimientos = request()->routeIs('categories.*', 'departments.*', 'faqs.*', 'users.*');
-    $isTickets = request()->routeIs('tickets.index', 'tickets.create');
+    $isTickets = request()->routeIs('tickets.index', 'tickets.create', 'tickets.show');
     $isGestion = request()->routeIs('tickets.gestion');
 @endphp
 
@@ -146,7 +146,7 @@
                                 <span class="menu-label">Tickets</span>
                             </li>
                             <li class="menu-item">
-                                <a class="menu-link {{ request()->routeIs('tickets.index') ? 'active' : '' }}"
+                                <a class="menu-link {{ request()->routeIs('tickets.index', 'tickets.show') ? 'active' : '' }}"
                                    href="{{ route('tickets.index') }}" role="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                          fill="none"

@@ -12,3 +12,16 @@
 <!-- begin::Scripts por vista -->
 @stack('scripts')
 <!-- end::Scripts por vista -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.app-toggler').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                setTimeout(function () {
+                    var state = document.documentElement.getAttribute('data-app-sidebar') || '';
+                    localStorage.setItem('sidebar-state', state);
+                }, 50);
+            });
+        });
+    });
+</script>
